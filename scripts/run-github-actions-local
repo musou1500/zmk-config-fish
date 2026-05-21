@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+set -eu
+
+repo_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+act_version="${ACT_VERSION:-v0.2.88}"
+act_bin="${ACT_BIN:-${repo_root}/.local/bin/act}"
+
+if command -v act >/dev/null 2>&1; then
+  act_cmd=$(command -v act)
+else
+  act_cmd="${act_bin}"
+fi
+
+if [ ! -x "${act_cmd}" ]; then
+  if ! command -v go >/dev/null 2>&1; then
+    echo "act is not installed and Go is unavailable." >&2
+    echo "Install act, or install Go so this script can build act ${act_version} into .local/bin." >&2
+    exit 1
+  fi
+
+  mkdir -p "${repo_root}/.local/bin" "${repo_root}/.local/go"
+  echo "Installing act ${act_version} into ${repo_root}/.local/bin..." >&2
+  GOBIN="${repo_root}/.local/bin" \
+    GOMODCACHE="${repo_root}/.local/go/pkg/mod" \
+    GOCACHE="${repo_root}/.local/go/cache" \
+    go install "github.com/nektos/act@${act_version}"
+fi
+
+cd "${repo_root}"
+exec "${act_cmd}" workflow_dispatch "$@"

@@ -1,0 +1,6 @@
+--workflows .github/workflows/local-build.yml
+--bind
+--container-architecture linux/amd64
+--artifact-server-path .local/act-artifacts
+--platform ubuntu-latest=catthehacker/ubuntu:act-latest
+--platform ubuntu-22.04=catthehacker/ubuntu:act-22.04

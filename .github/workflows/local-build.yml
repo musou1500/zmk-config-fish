@@ -1,0 +1,18 @@
+name: Local ZMK build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    steps:
+      - name: Build firmware
+        shell: sh
+        run: python3 scripts/local-zmk-build.py
+      - name: Fix local file ownership
+        if: ${{ always() }}
+        shell: sh
+        run: chown -R "$(stat -c '%u:%g' .)" .local

@@ -9,3 +9,19 @@
 スリープ時間、検出名など、キーボード本体の挙動を設定できます。  
 ### [Kconfig.defconfig](config/boards/shields/fish/Kconfig.defconfig)
 親機の左右を変えることができます。  
+
+## Run GitHub Actions locally
+GitHub CI builds firmware through `.github/workflows/build.yml`, which calls ZMK's reusable user-config workflow. Local runs use `.github/workflows/local-build.yml`, which mirrors the same `build.yaml` entries in the ZMK build container and writes firmware files directly to disk.
+
+Prerequisites:
+
+- Docker with access to the Docker daemon.
+- Go, if `act` is not already installed.
+
+Run the same workflow locally:
+
+```sh
+./scripts/run-github-actions-local
+```
+
+The script installs `act` v0.2.88 into `.local/bin` when no `act` binary is available, then runs the local workflow with the settings from `.actrc`. Local tool caches and firmware artifacts are written under `.local/`, which is ignored by git. Built firmware files are placed in `.local/firmware/`.
